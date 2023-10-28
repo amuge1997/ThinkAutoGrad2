@@ -2,6 +2,27 @@ from ThinkAutoGrad2.Tensor import Tensor
 import numpy as n
 
 
+class GD:
+    def __init__(self, lr):
+        self.lr = lr
+    
+    def run(self, lis):
+        def walk(li):
+            for i in li:
+                if isinstance(i, Tensor):
+                    self.run_(i)
+                elif isinstance(i, list):
+                    walk(i)
+        walk(lis)
+    
+    def run_(self, w):
+        lr = self.lr
+        arr = w.arr
+        grad = w.grad
+        arr -= lr * grad
+
+
+
 class Adam:
     def __init__(self, lr, p1=0.9, p2=0.999):
         self.dc = dict()

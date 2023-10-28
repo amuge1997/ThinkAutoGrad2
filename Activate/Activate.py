@@ -28,12 +28,14 @@ class Sigmoid:
         self.x_shape = x.arr.shape
 
     def forward(self):
-        z = Tensor(1 / (1 + n.exp(- self.x.arr)), self, (self.x,))
+        x = self.x.arr
+        z = Tensor(1 / (1 + n.exp(- x)), self, (self.x,))
         return z
 
     @check_grad_outs
     def backward(self, grad):
-        gz = grad * (1 / (1 + n.exp(- self.x.arr))) * (1 - 1 / (1 + n.exp(- self.x.arr)))
+        x = self.x.arr
+        gz = grad * (1 / (1 + n.exp(- x))) * (1 - 1 / (1 + n.exp(- x)))
         return (gz,)
 
 

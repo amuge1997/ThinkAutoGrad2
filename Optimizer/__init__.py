@@ -1,6 +1,6 @@
 
 
-from .Optimizer import Adam
+from .Optimizer import Adam, GD
 
 
 
