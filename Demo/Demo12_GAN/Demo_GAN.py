@@ -11,7 +11,7 @@ from PIL import Image
 # 加载mnist数字数据集数据
 def load_data():
     dc = n.load('./ThinkAutoGrad2/Demo/mnist.npz')
-    data_x = dc['x_train']
+    data_x, data_y = dc['x_train'], dc['y_train']
     x_ls = []
     for i in data_x:
         x = Image.fromarray(i)
@@ -20,10 +20,13 @@ def load_data():
         x = x[n.newaxis, ...]
         x_ls.append(x)
     data_x = n.concatenate(x_ls)
+
+    # 取0
+    data_x = data_x[data_y == 0]
     return data_x
 
 
-# 展示前数组9个图像
+# 展示数组前9个图像
 def show_image9(x):
     import matplotlib.pyplot as p
     nums = 9
@@ -32,7 +35,7 @@ def show_image9(x):
         xi = x[i]   # s,s,1 or 3
         p.subplot(3, 3, i+1)
         p.axis('off')
-        p.imshow(xi)
+        p.imshow(xi, cmap='gray')
     p.show()
 
 
@@ -40,34 +43,38 @@ def show_image9(x):
 class GN(nn.Model):
     def __init__(self, seed_size):
         super().__init__()
-        self.fc1 = nn.Linear(in_channels=seed_size, out_channels=128)
-        self.fc2 = nn.Linear(in_channels=128, out_channels=784)
-    
+        self.fc1 = nn.Linear(in_channels=seed_size, out_channels=64)
+        self.fc2 = nn.Linear(in_channels=64, out_channels=128)
+        self.fc3 = nn.Linear(in_channels=128, out_channels=784)
+
     def forward(self, x):
         y0 = x
         y1 = Activate.relu(self.fc1(y0))
-        y2 = self.fc2(y1)
-        return y2
+        y2 = Activate.relu(self.fc2(y1))
+        y3 = self.fc3(y2)
+        return y3
 
 
 # 判别网络
 class DN(nn.Model):
     def __init__(self):
         super().__init__()
-        self.fc1 = nn.Linear(in_channels=784, out_channels=32)
-        self.fc2 = nn.Linear(in_channels=32, out_channels=1)
-    
+        self.fc1 = nn.Linear(in_channels=784, out_channels=256)
+        self.fc2 = nn.Linear(in_channels=256, out_channels=64)
+        self.fc3 = nn.Linear(in_channels=64, out_channels=1)
+
     def forward(self, x):
         nums = x.shape[0]
         x = x.reshape((nums, 784))
         y0 = x
         y1 = Activate.relu(self.fc1(y0))
-        y2 = self.fc2(y1)
-        return y2
+        y2 = Activate.relu(self.fc2(y1))
+        y3 = self.fc3(y2)
+        return y3
 
 
 # 训练
-def train(batch, epochs, save_per_epochs, continue_train=True):
+def train(batch, epochs, lr, save_per_epochs, continue_train=True):
     seed_size = 16      # 采样维度
     g_path = 'g.pt'     # 生成器保存路径
     d_path = 'd.pt'     # 判别器保存路径
@@ -87,7 +94,7 @@ def train(batch, epochs, save_per_epochs, continue_train=True):
         D.load_weights(d_path)
 
     # 优化器
-    opt = Optimizer.GD(1e-2)
+    opt = Optimizer.GD(lr)
     
     # 训练
     for ep in range(epochs):
@@ -140,12 +147,6 @@ def show():
     batch = 9
     g_path = 'g.pt'
 
-    # 展示真实图像
-    data_x = load_data()
-    data_x = data_x / 255
-    real = data_x[:batch].reshape(batch, 28, 28)
-    show_image9(real)
-
     # 展示生成图像
     G = GN(seed_size)
     G.load_weights(g_path)
@@ -154,13 +155,20 @@ def show():
     fake = n.where(fake > 1., 1., fake)
     fake = n.where(fake < 0., 0., fake)
     show_image9(fake)
-    
+
+    # 展示真实图像
+    data_x = load_data()
+    data_x = data_x / 255
+    real = data_x[:batch].reshape(batch, 28, 28)
+    show_image9(real)
+
 
 if __name__ == '__main__':
     train(
         batch=16,
-        epochs=5000,
-        save_per_epochs=500
+        epochs=1000,
+        lr=1e-2,
+        save_per_epochs=100
     )
     show()
 
