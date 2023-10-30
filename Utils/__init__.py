@@ -10,6 +10,11 @@ def exp(x):
     return Exp(x).forward()
 
 
+def sqrt(x):
+    from .Utils import Sqrt
+    return Sqrt(x).forward()
+
+
 def log(x):
     from .Utils import Log
     return Log(x).forward()

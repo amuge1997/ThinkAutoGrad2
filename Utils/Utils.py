@@ -60,6 +60,22 @@ class Log:
     def backward(self, grad):
         gz = grad / self.x.arr
         return (gz, )
+    
+
+# 0级
+class Sqrt:
+    def __init__(self, x):
+        self.x = x
+        self.shape = x.shape
+
+    def forward(self):
+        z = Tensor(n.sqrt(self.x.arr), self, (self.x,))
+        return z
+    
+    @check_grad_outs
+    def backward(self, grad):
+        gz = grad * 0.5 * self.x.arr**0.5
+        return (gz, )
 
 
 # 1级
@@ -100,7 +116,7 @@ class Sum:
         self.x = x
         self.x_shape = x.shape
         self.axis = axis
-
+        
     def forward(self):
         z = Tensor(n.sum(self.x.arr, self.axis, keepdims=True), self, (self.x,))
         return z
