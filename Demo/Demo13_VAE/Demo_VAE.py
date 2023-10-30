@@ -21,7 +21,7 @@ def load_data():
         x_ls.append(x)
     data_x = n.concatenate(x_ls)
 
-    # 取数字0严格不能
+    # 取数字0
     data_x = data_x[data_y == 0]
     return data_x
 
