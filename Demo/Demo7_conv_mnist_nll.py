@@ -1,44 +1,29 @@
+import sys
+from ThinkAutoGrad2 import Init, Layers, Losses, Optimizer, Utils, Tensor, Activate, backward
+from ThinkAutoGrad2 import nn
 import numpy as n
+
 n.random.seed(0)
 
-from ThinkAutoGrad2 import Init, Layers, Losses, Optimizer, Utils, Tensor, Activate, backward, Model
-from sklearn.metrics import accuracy_score
 
-
-class Net(Model):
-    def __init__(self, out_c):
+class Net(nn.Model):
+    def __init__(self):
         super(Net, self).__init__()
-        ts_kernels1 = Init.xavier((4, 1, 2, 2), 4, 1, is_grad=True)
-        ts_bias1 = Init.zeros((4,), is_grad=True)
-
-        ts_kernels2 = Init.xavier((8, 4, 2, 2), 8, 4, is_grad=True)
-        ts_bias2 = Init.zeros((8,), is_grad=True)
-
-        ts_kernels4 = Init.xavier((16, 8, 2, 2), 16, 8, is_grad=True)
-        ts_bias4 = Init.zeros((16,), is_grad=True)
-
-        ts_kernels5 = Init.xavier((32, 16, 3, 3), 32, 16, is_grad=True)
-        ts_bias5 = Init.zeros((32,), is_grad=True)
-
-        ts_weights3 = Init.xavier((32*4*4, out_c), 32*4*4, out_c, is_grad=True)
-
-        self.weights_list = [
-            ts_kernels1, ts_bias1, ts_kernels2, ts_bias2,
-            ts_kernels4, ts_bias4, ts_kernels5, ts_bias5,
-            ts_weights3
-        ]
+        self.conv1 = nn.Conv2D(1, 4, 2, (2, 2))
+        self.conv2 = nn.Conv2D(4, 8, 2, (2, 2))
+        self.conv3 = nn.Conv2D(8, 16, 2, (2, 2))
+        self.conv4 = nn.Conv2D(16, 32, 3, (1, 1), is_padding=True)
+        self.fc = nn.Linear(32 * 4 * 4, 10)
 
     def forward(self, x):
-        ts_kernels1, ts_bias1, ts_kernels2, ts_bias2, ts_kernels4, \
-        ts_bias4, ts_kernels5, ts_bias5, ts_weights3 = self.weights_list
-
-        y1 = Activate.relu(Layers.conv2d(x, ts_kernels1, ts_bias1, stride=(2, 2)))  # 16
-        y2 = Activate.relu(Layers.conv2d(y1, ts_kernels2, ts_bias2, stride=(2, 2)))  # 8
-        y6 = Activate.relu(Layers.conv2d(y2, ts_kernels4, ts_bias4, stride=(2, 2)))  # 4
-        y7 = Activate.relu(Layers.conv2d(y6, ts_kernels5, ts_bias5, stride=(1, 1), is_padding=True))  # 4
+        y1 = Activate.relu(self.conv1(x))   # 16,16
+        y2 = Activate.relu(self.conv2(y1))  # 8,8
+        y6 = Activate.relu(self.conv3(y2))  # 4,4
+        y7 = Activate.relu(self.conv4(y6))  # 4,4
         y3 = Layers.flatten(y7)
-        y4 = y3 @ ts_weights3
-        return y4
+        y4 = self.fc(y3)
+        y5 = Activate.sigmoid(y4)
+        return y5
 
 
 def one_hot_encoding(labels, num_class=None):
@@ -49,15 +34,21 @@ def one_hot_encoding(labels, num_class=None):
     return one_hot_labels.astype('int')
 
 
-def load_data():
-    import cv2 as cv
+def resize(img, size):
+    from PIL import Image
+    img_ = Image.fromarray(img)
+    img_ = img_.resize(size)
+    img = n.array(img_)
+    return img
 
-    dc = n.load('mnist.npz')
+
+def load_data():
+    dc = n.load('./ThinkAutoGrad2/Demo/mnist.npz')
     data_x, data_y = dc['x_train'], dc['y_train']
 
     x_ls = []
     for i in data_x:
-        x = cv.resize(i, (32, 32))
+        x = resize(i, (32, 32))
         x = x[n.newaxis, ...]
         x_ls.append(x)
     data_x = n.concatenate(x_ls)
@@ -71,62 +62,136 @@ def load_data():
     return data_x, data_y
 
 
-def test2():
+def train():
     data_x, data_y = load_data()
 
     data_x = data_x[:, n.newaxis, ...]
     data_x = data_x / 255
 
-    n_samples = 1000
+    n_samples = 100
     data_x = data_x[:n_samples]
     data_y = data_y[:n_samples]
 
-    ts_data_x = Tensor(data_x)
-    ts_data_y = Tensor(data_y)
-
-    out_c = data_y.shape[-1]
+    data_x_ts = Tensor(data_x)
+    data_y_ts = Tensor(data_y)
 
     lr = 1e-3
-    batch_size = 24
-    epochs = 200
-    epochs_show = 10
+    batch_size = 8
+    epochs = 500
+    epochs_show = 5
+    weights_path = 'net.pt'
 
-    net = Net(out_c)
+    net = Net()
+
     adam = Optimizer.Adam(lr)
 
     for i in range(epochs):
 
         batch_i = n.random.randint(0, n_samples, batch_size)
-        ts_batch_x = ts_data_x[batch_i]
-        ts_batch_y = ts_data_y[batch_i]
+        batch_x_ts = data_x_ts[batch_i]
+        batch_y_ts = data_y_ts[batch_i]
 
-        predict_y = net(ts_batch_x)
-        loss = Losses.cross_entropy_loss(predict_y, ts_batch_y, axis=1)     # 交叉熵
+        predict_y = net(batch_x_ts)
+        loss = Losses.cross_entropy_loss(predict_y, batch_y_ts, axis=1)
 
         backward(loss)
-        adam.run(net.get_weights())
+        adam.run(net.get_weights(is_numpy=False, is_return_tree=False))
         net.grad_zeros()
 
-        if (i+1) % epochs_show == 0:
+        if (i + 1) % epochs_show == 0:
             print('{} loss - {}'.format(i + 1, n.sum(loss.arr)))
 
-    batch_i = n.array(range(32))
-    ts_batch_x = ts_data_x[batch_i]
-    ts_batch_y = ts_data_y[batch_i]
-    predict_y = net(ts_batch_x)
+    batch_i = n.array(range(16))
+    batch_x_ts = data_x_ts[batch_i]
+    batch_y_ts = data_y_ts[batch_i]
+    predict_y = net(batch_x_ts)
 
     print()
-    ls1 = [n.argmax(i) for i in ts_batch_y.arr]
-    ls2 = [n.argmax(i) for i in predict_y.arr]
-    print(ls1)
-    print(ls2)
+    loss1 = [n.argmax(i) for i in batch_y_ts.arr]
+    loss2 = [n.argmax(i) for i in predict_y.arr]
+    print(loss1)
+    print(loss2)
     print()
-    acc = accuracy_score(ls1, ls2)
-    print('acc - {}'.format(n.round(acc, 3)))
+    net.save_weights(weights_path)
+
+
+def test():
+    data_x, data_y = load_data()
+
+    data_x = data_x[:, n.newaxis, ...]
+    data_x = data_x / 255
+
+    n_samples = 100
+    data_x = data_x[:n_samples]
+    data_y = data_y[:n_samples]
+
+    data_x_ts = Tensor(data_x)
+    data_y_ts = Tensor(data_y)
+
+    weights_path = 'net.pt'
+
+    net = Net()
+    net.load_weights(weights_path)
+
+    batch_size = 16
+
+    batch_i = n.random.randint(0, n_samples, batch_size)
+    batch_x_ts = data_x_ts[batch_i]
+    batch_y_ts = data_y_ts[batch_i]
+    predict_y = net(batch_x_ts)
+
+    print()
+    loss1 = [n.argmax(i) for i in batch_y_ts.arr]
+    loss2 = [n.argmax(i) for i in predict_y.arr]
+    print(loss1)
+    print(loss2)
+    print()
 
 
 if __name__ == '__main__':
-    test2()
+    train()
+    test()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

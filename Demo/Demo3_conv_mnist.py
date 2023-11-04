@@ -1,7 +1,7 @@
 import numpy as n
 n.random.seed(0)
 
-from ThinkAutoGrad2 import Init, Layers, Losses, Optimizer, Utils, Tensor, Activate, backward, Model
+from ThinkAutoGrad2 import Init, Layers, Losses, Optimizer, Utils, Tensor, Activate, backward
 from sklearn.metrics import accuracy_score
 
 
@@ -30,7 +30,7 @@ def one_hot_encoding(labels, num_class=None):
 def load_data():
     import cv2 as cv
 
-    dc = n.load('mnist.npz')
+    dc = n.load('./ThinkAutoGrad2/Demo/mnist.npz')
     data_x, data_y = dc['x_train'], dc['y_train']
 
     x_ls = []

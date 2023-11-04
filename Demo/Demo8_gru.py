@@ -1,7 +1,7 @@
 import numpy as n
 n.random.seed(0)
 
-from ThinkAutoGrad2 import Init, Layers, Losses, Optimizer, Utils, Tensor, Activate, backward, Model
+from ThinkAutoGrad2 import Init, Layers, Losses, Optimizer, Utils, Tensor, Activate, backward
 import time
 
 
@@ -21,8 +21,8 @@ if __name__ == '__main__':
     sin_x = n.sin(t)
     max_time_step = sin_x.shape[0]
 
-    batch = 4
-    time_step = 4
+    batch = 8
+    time_step = 16
     epoch = 2000
     adam = Optimizer.Adam(1e-3)
     h = Init.zeros((batch, 1, hidden_size))
