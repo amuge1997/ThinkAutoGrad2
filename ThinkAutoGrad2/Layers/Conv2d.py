@@ -1,6 +1,6 @@
 
 import numpy as n
-from ThinkAutoGrad2.Tensor import Tensor, check_grad_outs
+from ..Tensor import Tensor, check_grad_outs
 
 
 # 测试

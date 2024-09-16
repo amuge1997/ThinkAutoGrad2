@@ -1,6 +1,6 @@
-from ThinkAutoGrad2 import Activate
-from ThinkAutoGrad2 import Utils
-from ThinkAutoGrad2.Tensor import Tensor, check_grad_outs
+from .. import Activate
+from .. import Utils
+from ..Tensor import Tensor, check_grad_outs
 import numpy as n
 
 

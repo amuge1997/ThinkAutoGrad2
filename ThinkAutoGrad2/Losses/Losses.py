@@ -1,6 +1,6 @@
 import numpy as n
-from ThinkAutoGrad2.Tensor import Tensor, check_grad_outs
-from ThinkAutoGrad2 import Utils
+from ..Tensor import Tensor, check_grad_outs
+from .. import Utils
 
 
 def check_losses_inps_shape_equal(func):

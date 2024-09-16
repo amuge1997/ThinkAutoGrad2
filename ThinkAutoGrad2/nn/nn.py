@@ -1,4 +1,4 @@
-from ThinkAutoGrad2 import Init, Layers, Losses, Optimizer, Utils, Tensor, Activate, backward
+from .. import Init, Layers, Losses, Optimizer, Utils, Tensor, Activate, backward
 
 
 class Model:

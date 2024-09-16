@@ -1,4 +1,4 @@
-from ThinkAutoGrad2.Tensor import Tensor, check_grad_outs
+from ..Tensor import Tensor, check_grad_outs
 import numpy as n
 
 
