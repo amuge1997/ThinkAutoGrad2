@@ -1,5 +1,4 @@
 # 变分自编码器VAE的图像生成Demo
-<br>
 真实图像
 ![real](https://github.com/user-attachments/assets/869efbdc-ab4d-4459-943f-ce36eba43dc0)
 生成图像
