@@ -1,4 +1,5 @@
 # 变分自编码器VAE的图像生成Demo
+https://github.com/amuge1997/ThinkAutoGrad2_2023/tree/main/ThinkAutoGrad2/Demo/Demo13_VAE
 真实图像
 
 ![real](https://github.com/user-attachments/assets/869efbdc-ab4d-4459-943f-ce36eba43dc0)
