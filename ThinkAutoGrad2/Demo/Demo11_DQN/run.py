@@ -101,17 +101,17 @@ class MM:
         self.Q.load_weights(self.path)
         self.QD.load_weights(self.path)
 
-    def train(self, is_continue):
-        epochs = 200
-        lr = 1e-2
+    def train(self, epochs, is_continue):
+        lr = 1e-3
         c = 5
 
         if is_continue:
             self.load()
 
-        r = 0.3
+        r = 0.8
 
-        adam = Optimizer.Adam(lr)
+        optim = Optimizer.Adam(lr)
+        # optim = Optimizer.GD(lr)
 
         for ep in range(epochs):
             print()
@@ -133,7 +133,7 @@ class MM:
 
             print('EPOCHS: {:<3} LOSS: {:<5.9f}'.format(ep, loss.numpy().mean()))
 
-            adam.run(self.Q.get_weights(is_numpy=False, is_return_tree=False))
+            optim.run(self.Q.get_weights(is_numpy=False, is_return_tree=False))
             if ep % c == 0:
                 self.trans_paras()
 
@@ -155,25 +155,30 @@ def predict():
     x = 0
     y = 0
     s = (x, y)
-    for i in range(10):
+    ret = [s]
+    for _ in range(10):
         a = mm.predict(s)
         s = en.state_step(s, a)
         print(s)
+        ret.append(s)
         if en.is_terminal(s):
             break
+    return ret
 
 
-def train(is_continue):
+def train(epochs, is_continue):
     mm = MM()
-    mm.train(is_continue)
+    mm.train(epochs, is_continue)
 
 
-if __name__ == '__main__':
-    train(
-        is_continue=True
-    )
-    predict()
-
+# if __name__ == '__main__':
+#     train(
+#         epochs = 1000,
+#         is_continue=True
+#     )
+#     ret = predict()
+    
+    
 
 
 

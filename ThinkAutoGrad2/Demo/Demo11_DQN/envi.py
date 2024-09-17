@@ -2,6 +2,20 @@ import random
 
 
 class Envi:
+    
+    target_x = 4
+    target_y = 4
+
+    x_min = 0
+    x_max = 5
+    y_min = 0
+    y_max = 5
+
+    obs_xy = [(0, 1), (2, 0), (1, 4), (2, 2), (1,2), (3, 2), (3,3)]
+    # obs_xy = [(0, 2), (3, 0), (4, 2), (2, 4), (2, 2)]
+    # obs_xy = [(0, 2), (3, 0), (4, 2), (2, 4)]
+    # obs_xy = []
+
     def __init__(self):
         pass
 
@@ -42,7 +56,7 @@ class Envi:
     @staticmethod
     def is_terminal(s):
         x, y = s
-        if not 0 <= x < 5 or not 0 <= y < 5 or (x == 4 and y == 4):
+        if not Envi.x_min <= x < Envi.x_max or not Envi.y_min <= y < Envi.y_max or (x == Envi.target_x and y == Envi.target_y):
             return True
         return False
 
@@ -58,17 +72,25 @@ class Envi:
             return '下'
         else:
             raise Exception
+        
+    @staticmethod
+    def is_obs(x, y):
+        for ox, oy in Envi.obs_xy:
+            if x == ox and y == oy:
+                return True
+        return False
 
     @staticmethod
     def value_step(s):
         x, y = s
-        if not 0 <= x < 5 or not 0 <= y < 5:
+        if not Envi.x_min <= x < Envi.x_max or not Envi.y_min <= y < Envi.y_max:        # 越界惩罚
             return -1
-        elif x == 4 and y == 4:
+        elif Envi.is_obs(x, y):                                                         # 障碍惩罚
+            return -1
+        elif x == Envi.target_x and y == Envi.target_y:                                 # 目标奖励
             return 1
         else:
             return 0
-
 
 
 
