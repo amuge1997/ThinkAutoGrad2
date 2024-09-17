@@ -20,7 +20,7 @@ class QModelBig(Model):
         return x
 
 
-class QModel(Model):
+class QModelSmall(Model):
     def __init__(self):
         super().__init__()
         self.fc1 = Linear(2, 32)
@@ -32,6 +32,10 @@ class QModel(Model):
         x = Activate.relu(self.fc1(x))
         x = self.fc4(x)
         return x
+
+
+
+QModel = QModelBig
 
 
 if __name__ == '__main__':

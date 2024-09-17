@@ -56,7 +56,7 @@ class Envi:
     @staticmethod
     def is_terminal(s):
         x, y = s
-        if not Envi.x_min <= x < Envi.x_max or not Envi.y_min <= y < Envi.y_max or (x == Envi.target_x and y == Envi.target_y):
+        if not Envi.x_min <= x < Envi.x_max or not Envi.y_min <= y < Envi.y_max or (x == Envi.target_x and y == Envi.target_y) or Envi.is_obs(x, y):
             return True
         return False
 

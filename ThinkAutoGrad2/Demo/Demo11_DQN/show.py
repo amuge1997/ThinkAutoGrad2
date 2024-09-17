@@ -58,7 +58,7 @@ def show(ret):
 
 if __name__ == '__main__':
     train(
-        epochs = 10000,
+        epochs = 1000,
         is_continue=True
     )
     ret = predict()

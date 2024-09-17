@@ -10,6 +10,7 @@ class MM:
         self.Q = QModel()
         self.QD = QModel()
         self.path = 'model/Q.pt'
+        self.sample_step = 20
 
         self.samples = self.make_samples()
 
@@ -38,8 +39,8 @@ class MM:
     def make_samples(self):
         en = Envi()
 
-        epochs = 1000
-        steps = 10
+        epochs = 10000
+        steps = self.sample_step
 
         samples = []
 
@@ -108,7 +109,7 @@ class MM:
         if is_continue:
             self.load()
 
-        r = 0.8
+        r = 0.5
 
         optim = Optimizer.Adam(lr)
         # optim = Optimizer.GD(lr)
@@ -156,7 +157,7 @@ def predict():
     y = 0
     s = (x, y)
     ret = [s]
-    for _ in range(10):
+    for _ in range(mm.sample_step):
         a = mm.predict(s)
         s = en.state_step(s, a)
         print(s)
