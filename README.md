@@ -1,4 +1,4 @@
-##基于ThinkAutoGrad的变分自编码器VAE的图像生成Demo
+## 基于ThinkAutoGrad的变分自编码器VAE的图像生成Demo
 <br>
 真实图像
 <br>
@@ -9,7 +9,7 @@
 ![fake](https://github.com/user-attachments/assets/df478a3c-c227-4004-a8c7-5bc534ace451)
 <br>
 <br>
-##基于ThinkAutoGrad的生成对抗网络GAN的图像生成Demo
+## 基于ThinkAutoGrad的生成对抗网络GAN的图像生成Demo
 <br>
 真实图像
 <br>
