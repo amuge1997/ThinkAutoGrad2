@@ -1,5 +1,5 @@
 # 自动梯度框架
-from ThinkAutoGrad2.ThinkAutoGrad2 import nn, Losses, Optimizer, Tensor, Activate, backward, Utils
+from ThinkAutoGrad2 import nn, Losses, Optimizer, Tensor, Activate, backward, Utils
 
 # 基础库
 import numpy as n

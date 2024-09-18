@@ -1,5 +1,5 @@
 # 自动梯度框架
-from ThinkAutoGrad2.ThinkAutoGrad2 import nn, Losses, Optimizer, Tensor, Activate, backward, Utils
+from ThinkAutoGrad2 import nn, Losses, Optimizer, Tensor, Activate, backward, Utils
 
 # 基础库
 import numpy as n
@@ -132,7 +132,7 @@ if __name__ == '__main__':
     net_path = './workspace/net_2d.pt'
     train(
         batch_size=128, 
-        epochs=5000, 
+        epochs=1000, 
         lr=1e-3, 
         save_per_epochs=500, 
         continue_train=True
