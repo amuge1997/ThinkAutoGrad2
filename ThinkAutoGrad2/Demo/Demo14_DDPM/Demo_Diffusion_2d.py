@@ -9,7 +9,6 @@ from PIL import Image
 from DDPM import DDPM
 
 
-
 # 加载mnist数据集
 def load_data():
     data = n.load("./workspace/data.npz")
