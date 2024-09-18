@@ -1,3 +1,6 @@
+# 扩散模型DDPM
+![diffusion_2d_result](https://github.com/user-attachments/assets/9af34465-8a4b-4675-9b45-390393608eb1)
+
 # 变分自编码器VAE图像生成
 [VAE Demo](https://github.com/amuge1997/ThinkAutoGrad2_2023/tree/main/ThinkAutoGrad2/Demo/Demo13_VAE)
 
