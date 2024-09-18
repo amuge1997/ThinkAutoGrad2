@@ -79,14 +79,14 @@ class Decoder(nn.Model):
         return y3
 
 
-def train(batch, epochs, lr, save_per_epochs, continue_train):
+def train(batch_size, epochs, lr, save_per_epochs, continue_train):
     encoder_path = 'encoder.pt'     # 生成器保存路径
     decoder_path = 'decoder.pt'     # 判别器保存路径
 
     # 加载数据
     data_x = load_data()
     data_x = data_x / 255
-    nums = data_x.shape[0]
+    data_nums = data_x.shape[0]
 
     # 网络结构
     encoder = Encoder()
@@ -98,22 +98,21 @@ def train(batch, epochs, lr, save_per_epochs, continue_train):
         decoder.load_weights(decoder_path)
 
 
-    opt = Optimizer.GD(lr)
+    opt = Optimizer.Adam(lr)
     
     # 训练
     for ep in range(epochs):
         # 随机挑选真样本
-        samples_index = random.sample(range(nums), batch)
+        samples_index = random.sample(range(data_nums), batch_size)
         image = Tensor(data_x[samples_index, ...])
-        nums = image.shape[0]
-        image = image.reshape((nums, 784))
+        image = image.reshape((batch_size, 784))
 
         z, mu, sig = encoder(image)
         rec_image = decoder(z)
         
         t1 = Tensor(n.ones(sig.shape))
         t01 = Tensor(n.ones(sig.shape)*1e-8)
-        tc = Tensor(n.ones(sig.shape)*0.5 / batch)
+        tc = Tensor(n.ones(sig.shape)*0.5 / batch_size)
         
         loss1 = Losses.mse(rec_image, image)
         loss1 = Utils.sum(loss1, axis=1)
@@ -159,9 +158,9 @@ def show():
 
 if __name__ == '__main__':
     train(
-        batch=16,
-        epochs=500,
-        lr=1e-2,
+        batch_size=16,
+        epochs=1000,
+        lr=1e-3,
         save_per_epochs=100,
         continue_train=True
     )
