@@ -1,4 +1,4 @@
-# 变分自编码器VAE的图像生成
+# 变分自编码器VAE图像生成
 [VAE Demo](https://github.com/amuge1997/ThinkAutoGrad2_2023/tree/main/ThinkAutoGrad2/Demo/Demo13_VAE)
 
 真实图像
@@ -9,7 +9,7 @@
 
 ![fake](https://github.com/user-attachments/assets/df478a3c-c227-4004-a8c7-5bc534ace451)
 
-# 生成对抗网络GAN的图像生成
+# 生成对抗网络GAN图像生成
 [GAN Demo](https://github.com/amuge1997/ThinkAutoGrad2_2023/tree/main/ThinkAutoGrad2/Demo/Demo12_GAN)
 
 真实图像
