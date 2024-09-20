@@ -1,5 +1,5 @@
 # 概述
-这是一个基于numpy且只基于numpy的自动梯度库，主要目的是用于实现并验证自动梯度思想，各类接口仿照了pytorch。应该说，自动梯度的数学基石只有一个：全微分公式
+这是一个基于numpy且只基于numpy的自动微分库，可以用于各类神经网络结构的梯度计算。主要目的是实现并验证自动微分思想。各类接口仿照了pytorch。应该说，自动微分的数学基石只有一个：全微分公式
 
 # 扩散模型DDPM数据生成
 [DDPM Demo](https://github.com/amuge1997/ThinkAutoGrad2_2023/tree/main/ThinkAutoGrad2/Demo/Demo14_DDPM)
