@@ -1,5 +1,4 @@
 ## 生成对抗网络GAN图像生成
-[GAN Demo](https://github.com/amuge1997/ThinkAutoGrad2_2023/tree/main/ThinkAutoGrad2/Demo/Demo12_GAN)
 
 真实图像
 
