@@ -30,7 +30,7 @@
 
 ![fake](https://github.com/user-attachments/assets/d67ca8aa-f6ae-4174-87b2-52c474320500)
 
-## 深度强化学习DQN寻路
+### 深度强化学习DQN寻路
 [DQN Demo](https://github.com/amuge1997/ThinkAutoGrad2_2023/tree/main/ThinkAutoGrad2/Demo/Demo11_DQN)
 
 ![41](https://github.com/user-attachments/assets/490f4cd8-0b14-455b-bdb8-a52114ffd320)
